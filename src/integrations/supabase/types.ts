@@ -14,7 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      ai_insights: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          recommendation: string
+          severity: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          recommendation: string
+          severity: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          recommendation?: string
+          severity?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      spending_data: {
+        Row: {
+          amount: number
+          category: string
+          created_at: string
+          date: string
+          expected: number
+          id: string
+          is_anomaly: boolean
+        }
+        Insert: {
+          amount: number
+          category: string
+          created_at?: string
+          date: string
+          expected: number
+          id?: string
+          is_anomaly?: boolean
+        }
+        Update: {
+          amount?: number
+          category?: string
+          created_at?: string
+          date?: string
+          expected?: number
+          id?: string
+          is_anomaly?: boolean
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
