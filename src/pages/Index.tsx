@@ -6,6 +6,7 @@ import TimeSeriesPanel from '@/components/dashboard/TimeSeriesPanel';
 import PercentChangeTable from '@/components/dashboard/PercentChangeTable';
 import AIInsightsPanel from '@/components/dashboard/AIInsightsPanel';
 import ComparisonPanel from '@/components/dashboard/ComparisonPanel';
+import ImportUSASpending from '@/components/dashboard/ImportUSASpending';
 
 const tabs = [
   { id: 'overview', label: 'Overview' },
@@ -23,6 +24,7 @@ const Index = () => {
     <div className="min-h-screen grid-pattern">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <DashboardHeader />
+        <ImportUSASpending />
 
         {/* Tab Navigation */}
         <div className="flex items-center gap-1 mb-6 p-1 glass-panel rounded-lg w-fit">
