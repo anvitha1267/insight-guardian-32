@@ -1,5 +1,9 @@
-import { corsHeaders } from "@supabase/supabase-js/cors";
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from "npm:@supabase/supabase-js@2";
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
 
 const USA_SPENDING_API = "https://api.usaspending.gov/api/v2";
 const CT_FIPS = "09";
