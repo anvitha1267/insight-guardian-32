@@ -20,11 +20,15 @@ const StatsBar = () => {
   const totalSpend = summaries.reduce((s, c) => s + c.total, 0);
   const avgChange = summaries.reduce((s, c) => s + c.percentChange, 0) / summaries.length;
 
+  const totalDisplay = totalSpend >= 1e9
+    ? `$${(totalSpend / 1e9).toFixed(2)}B`
+    : `$${(totalSpend / 1e6).toFixed(2)}M`;
+
   const stats = [
-    { label: 'Total Annual Spend', value: `$${(totalSpend / 1000000).toFixed(2)}M`, icon: DollarSign, color: 'text-primary' },
+    { label: 'Total CT Spend', value: totalDisplay, icon: DollarSign, color: 'text-primary' },
     { label: 'Anomalies Detected', value: anomalies.length.toString(), icon: AlertTriangle, color: 'text-anomaly' },
     { label: 'Avg H2/H1 Change', value: `${avgChange > 0 ? '+' : ''}${avgChange.toFixed(1)}%`, icon: avgChange > 0 ? TrendingUp : TrendingDown, color: avgChange > 0 ? 'text-warning' : 'text-success' },
-    { label: 'Categories Tracked', value: summaries.length.toString(), icon: DollarSign, color: 'text-muted-foreground' },
+    { label: 'Agencies Tracked', value: summaries.length.toString(), icon: DollarSign, color: 'text-muted-foreground' },
   ];
 
   return (

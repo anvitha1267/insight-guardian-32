@@ -72,11 +72,12 @@ export const getCategorySummaries = (data: SpendingDataPoint[]): CategorySummary
   return categories.map(cat => {
     const catData = data.filter(d => d.category === cat);
     const total = catData.reduce((s, d) => s + d.amount, 0);
-    const avg = total / catData.length;
+    const avg = catData.length ? total / catData.length : 0;
     const anomalyCount = catData.filter(d => d.is_anomaly).length;
-    const firstHalf = catData.slice(0, 6).reduce((s, d) => s + d.amount, 0);
-    const secondHalf = catData.slice(6).reduce((s, d) => s + d.amount, 0);
-    const percentChange = ((secondHalf - firstHalf) / firstHalf) * 100;
+    const half = Math.floor(catData.length / 2) || 1;
+    const firstHalf = catData.slice(0, half).reduce((s, d) => s + d.amount, 0);
+    const secondHalf = catData.slice(half).reduce((s, d) => s + d.amount, 0);
+    const percentChange = firstHalf > 0 ? ((secondHalf - firstHalf) / firstHalf) * 100 : 0;
     return { category: cat, total, average: Math.round(avg), anomalyCount, percentChange: Math.round(percentChange * 10) / 10 };
   });
 };

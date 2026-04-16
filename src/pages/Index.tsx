@@ -59,8 +59,7 @@ const Index = () => {
         {activeTab === 'timeseries' && (
           <div className="space-y-6 pb-12">
             <TimeSeriesPanel />
-            <AnomalyChart category="Marketing" />
-            <AnomalyChart category="Travel" />
+            <AnomalyChart />
           </div>
         )}
 

@@ -26,7 +26,7 @@ const AnomalyChart = ({ category }: { category?: string }) => {
       <div className="flex items-center justify-between mb-4">
         <div>
           <h2 className="font-heading text-sm uppercase tracking-wider text-muted-foreground">Anomaly Detection</h2>
-          <p className="text-foreground font-heading text-lg">{category || 'All Categories'} — Spending vs Expected</p>
+          <p className="text-foreground font-heading text-lg">{category || 'All Agencies'} — Spending vs Expected</p>
         </div>
         <div className="flex items-center gap-4 text-xs font-mono">
           <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-primary" /> Actual</span>
@@ -44,10 +44,10 @@ const AnomalyChart = ({ category }: { category?: string }) => {
           </defs>
           <CartesianGrid stroke="hsl(222, 25%, 16%)" strokeDasharray="3 3" />
           <XAxis dataKey="date" stroke="hsl(215, 15%, 50%)" fontSize={11} fontFamily="JetBrains Mono" />
-          <YAxis stroke="hsl(215, 15%, 50%)" fontSize={11} fontFamily="JetBrains Mono" tickFormatter={v => `$${(v/1000).toFixed(0)}k`} />
+          <YAxis stroke="hsl(215, 15%, 50%)" fontSize={11} fontFamily="JetBrains Mono" tickFormatter={v => `$${(v/1e6).toFixed(0)}M`} />
           <Tooltip
             contentStyle={{ backgroundColor: 'hsl(222, 44%, 9%)', border: '1px solid hsl(222, 25%, 16%)', borderRadius: '8px', fontFamily: 'JetBrains Mono', fontSize: 12 }}
-            formatter={(value: number) => [`$${value.toLocaleString()}`, '']}
+            formatter={(value: number) => [`$${(value / 1e6).toFixed(2)}M`, '']}
           />
           <Area type="monotone" dataKey="expected" stroke="hsl(215, 15%, 50%)" strokeDasharray="5 5" fillOpacity={0} strokeWidth={1.5} />
           <Area type="monotone" dataKey="amount" stroke="hsl(175, 80%, 50%)" fill="url(#gradientActual)" strokeWidth={2} />
