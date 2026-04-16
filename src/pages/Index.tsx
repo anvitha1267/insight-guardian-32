@@ -6,6 +6,7 @@ import TimeSeriesPanel from '@/components/dashboard/TimeSeriesPanel';
 import PercentChangeTable from '@/components/dashboard/PercentChangeTable';
 import AIInsightsPanel from '@/components/dashboard/AIInsightsPanel';
 import ComparisonPanel from '@/components/dashboard/ComparisonPanel';
+import ImportUSASpending from '@/components/dashboard/ImportUSASpending';
 
 const tabs = [
   { id: 'overview', label: 'Overview' },
