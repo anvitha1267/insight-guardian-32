@@ -51,7 +51,7 @@ const ImportUSASpending = () => {
           {status === 'loading' ? (
             <><Loader2 className="h-4 w-4 animate-spin" /> Importing...</>
           ) : (
-            <><Download className="h-4 w-4" /> {status === 'error' ? 'Retry' : 'Import CT Data'}</>
+            <><Download className="h-4 w-4" /> {status === 'error' ? 'Retry' : 'Import State Data'}</>
           )}
         </Button>
       </div>
