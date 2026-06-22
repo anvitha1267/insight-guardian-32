@@ -11,7 +11,7 @@ const ImportUSASpending = () => {
 
   const handleImport = async () => {
     setStatus('loading');
-    setMessage('Fetching CT spending data from USAspending.gov...');
+    setMessage('Fetching multi-state spending data from USAspending.gov...');
 
     try {
       const { data, error } = await supabase.functions.invoke('fetch-usaspending');
