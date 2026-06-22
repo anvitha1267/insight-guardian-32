@@ -10,7 +10,7 @@ const DashboardHeader = () => (
         <h1 className="font-heading text-xl font-bold tracking-tight text-foreground">
           SpendGuard<span className="text-primary">.</span>ai
         </h1>
-        <p className="text-xs text-muted-foreground font-mono">CT Federal Spending · USAspending.gov</p>
+        <p className="text-xs text-muted-foreground font-mono">Multi-State Federal Spending · USAspending.gov</p>
       </div>
     </div>
     <div className="flex items-center gap-3">
