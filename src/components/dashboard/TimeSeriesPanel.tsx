@@ -44,7 +44,7 @@ const TimeSeriesPanel = () => {
   return (
     <div className="glass-panel rounded-lg p-6">
       <h2 className="font-heading text-sm uppercase tracking-wider text-muted-foreground mb-1">Time Series Analysis</h2>
-      <p className="text-foreground font-heading text-lg mb-4">Federal Agency Spending in Connecticut</p>
+      <p className="text-foreground font-heading text-lg mb-4">Federal Spending Across US States</p>
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={chartData} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
           <CartesianGrid stroke="hsl(222, 25%, 16%)" strokeDasharray="3 3" />
