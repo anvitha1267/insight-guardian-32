@@ -11,7 +11,7 @@ const ImportUSASpending = () => {
 
   const handleImport = async () => {
     setStatus('loading');
-    setMessage('Fetching CT spending data from USAspending.gov...');
+    setMessage('Fetching multi-state spending data from USAspending.gov...');
 
     try {
       const { data, error } = await supabase.functions.invoke('fetch-usaspending');
@@ -33,7 +33,7 @@ const ImportUSASpending = () => {
     <div className="glass-panel rounded-lg p-4 flex items-center gap-4">
       <div className="flex-1">
         <p className="text-sm font-mono text-foreground">
-          {status === 'idle' && 'Import real federal spending data for Connecticut from USAspending.gov'}
+          {status === 'idle' && 'Import real federal spending data across 14 US states from USAspending.gov'}
           {status === 'loading' && message}
           {status === 'success' && message}
           {status === 'error' && message}
@@ -51,7 +51,7 @@ const ImportUSASpending = () => {
           {status === 'loading' ? (
             <><Loader2 className="h-4 w-4 animate-spin" /> Importing...</>
           ) : (
-            <><Download className="h-4 w-4" /> {status === 'error' ? 'Retry' : 'Import CT Data'}</>
+            <><Download className="h-4 w-4" /> {status === 'error' ? 'Retry' : 'Import State Data'}</>
           )}
         </Button>
       </div>

@@ -8,6 +8,24 @@ const corsHeaders = {
 const USA_SPENDING_API = "https://api.usaspending.gov/api/v2";
 const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
+// Top federal-spending states (broad geographic mix, high obligation volume).
+const STATES: Array<{ code: string; label: string }> = [
+  { code: "CA", label: "California" },
+  { code: "TX", label: "Texas" },
+  { code: "VA", label: "Virginia" },
+  { code: "NY", label: "New York" },
+  { code: "FL", label: "Florida" },
+  { code: "MD", label: "Maryland" },
+  { code: "PA", label: "Pennsylvania" },
+  { code: "WA", label: "Washington" },
+  { code: "MA", label: "Massachusetts" },
+  { code: "GA", label: "Georgia" },
+  { code: "OH", label: "Ohio" },
+  { code: "IL", label: "Illinois" },
+  { code: "CT", label: "Connecticut" },
+  { code: "AZ", label: "Arizona" },
+];
+
 interface SpendingRow {
   date: string;
   amount: number;
@@ -16,15 +34,14 @@ interface SpendingRow {
   expected: number;
 }
 
-async function fetchAgencyMonthly(agency: string, startDate: string, endDate: string) {
+async function fetchStateMonthly(stateCode: string, startDate: string, endDate: string) {
   const res = await fetch(`${USA_SPENDING_API}/search/spending_over_time/`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       group: "month",
       filters: {
-        place_of_performance_locations: [{ country: "USA", state: "CT" }],
-        agencies: [{ type: "awarding", tier: "toptier", name: agency }],
+        place_of_performance_locations: [{ country: "USA", state: stateCode }],
         time_period: [{ start_date: startDate, end_date: endDate }],
       },
     }),
@@ -47,49 +64,14 @@ Deno.serve(async (req) => {
     const startDate = `${currentYear - 2}-01-01`;
     const endDate = `${currentYear - 1}-12-31`;
 
-    // Step 1: get top awarding agencies for CT
-    const topAgenciesRes = await fetch(
-      `${USA_SPENDING_API}/search/spending_by_category/awarding_agency/`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          filters: {
-            place_of_performance_locations: [{ country: "USA", state: "CT" }],
-            time_period: [{ start_date: startDate, end_date: endDate }],
-          },
-          limit: 8,
-          page: 1,
-        }),
-      }
-    );
-    if (!topAgenciesRes.ok) {
-      throw new Error(`Top agencies failed: ${await topAgenciesRes.text()}`);
-    }
-    const topAgenciesJson = await topAgenciesRes.json();
-    const topAgencies: string[] = (topAgenciesJson.results || [])
-      .slice(0, 6)
-      .map((r: { name: string }) => r.name)
-      .filter(Boolean);
-
-    if (topAgencies.length === 0) {
-      throw new Error("No agencies returned from USAspending.gov");
-    }
-
-    // Step 2: fetch monthly time series per agency in parallel
-    const perAgencyResults = await Promise.all(
-      topAgencies.map((a) => fetchAgencyMonthly(a, startDate, endDate))
+    // Fetch monthly time series per state in parallel
+    const perStateResults = await Promise.all(
+      STATES.map((s) => fetchStateMonthly(s.code, startDate, endDate))
     );
 
     const spendingRows: SpendingRow[] = [];
-    topAgencies.forEach((agency, idx) => {
-      const monthly = perAgencyResults[idx];
-      // Shorten agency name for display (drop "Department of " etc.)
-      const shortName = agency
-        .replace(/^Department of (the )?/i, "")
-        .replace(/^U\.?S\.? /i, "")
-        .slice(0, 40);
-
+    STATES.forEach((state, idx) => {
+      const monthly = perStateResults[idx];
       for (const r of monthly) {
         const monthIdx = (r.time_period?.month ?? 1) - 1;
         const year = r.time_period?.fiscal_year ?? r.time_period?.year ?? currentYear;
@@ -99,7 +81,7 @@ Deno.serve(async (req) => {
         spendingRows.push({
           date: dateLabel,
           amount,
-          category: shortName,
+          category: state.label,
           is_anomaly: false,
           expected: 0,
         });
@@ -107,10 +89,10 @@ Deno.serve(async (req) => {
     });
 
     if (spendingRows.length === 0) {
-      throw new Error("No spending data points returned");
+      throw new Error("No spending data points returned from USAspending.gov");
     }
 
-    // Step 3: anomaly detection per category (>1.5 std dev OR >40% MoM change)
+    // Anomaly detection per state (>1.5 std dev from that state's monthly mean)
     const byCategory: Record<string, SpendingRow[]> = {};
     for (const row of spendingRows) {
       (byCategory[row.category] ||= []).push(row);
@@ -130,7 +112,7 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Step 4: clear and insert
+    // Clear and insert
     await supabase.from("spending_data").delete().neq("id", "00000000-0000-0000-0000-000000000000");
     await supabase.from("ai_insights").delete().neq("id", "00000000-0000-0000-0000-000000000000");
 
@@ -139,26 +121,24 @@ Deno.serve(async (req) => {
       if (error) throw new Error(`Insert spending_data: ${error.message}`);
     }
 
-    // Step 5: build insights
+    // Build insights
     const anomalies = spendingRows.filter((r) => r.is_anomaly);
     const insights: Array<{ severity: string; title: string; description: string; recommendation: string }> = [];
 
-    // Top anomalies
     const sortedAnomalies = anomalies
       .sort((a, b) => Math.abs(b.amount - b.expected) - Math.abs(a.amount - a.expected))
-      .slice(0, 4);
+      .slice(0, 5);
 
     for (const a of sortedAnomalies) {
       const dev = a.expected > 0 ? Math.round(((a.amount - a.expected) / a.expected) * 100) : 0;
       insights.push({
         severity: Math.abs(dev) > 100 ? "critical" : "warning",
         title: `${a.category} — ${a.date} Anomaly`,
-        description: `${a.category} spending of $${(a.amount / 1e6).toFixed(1)}M in ${a.date} is ${Math.abs(dev)}% ${dev > 0 ? "above" : "below"} the agency's monthly average of $${(a.expected / 1e6).toFixed(1)}M for Connecticut.`,
-        recommendation: `Investigate ${a.category} obligations during ${a.date} — review specific awards driving the deviation.`,
+        description: `${a.category} federal spending of $${(a.amount / 1e9).toFixed(2)}B in ${a.date} is ${Math.abs(dev)}% ${dev > 0 ? "above" : "below"} the state's monthly average of $${(a.expected / 1e9).toFixed(2)}B.`,
+        recommendation: `Investigate obligations in ${a.category} during ${a.date} — review the specific awards driving the deviation.`,
       });
     }
 
-    // Top spender insight
     const totals = Object.entries(byCategory).map(([cat, rows]) => ({
       category: cat,
       total: rows.reduce((s, r) => s + r.amount, 0),
@@ -167,17 +147,17 @@ Deno.serve(async (req) => {
     if (totals[0]) {
       insights.push({
         severity: "info",
-        title: `Largest Spender: ${totals[0].category}`,
-        description: `${totals[0].category} accounts for $${(totals[0].total / 1e9).toFixed(2)}B in CT federal spending across the period — the largest of the top ${totals.length} agencies.`,
-        recommendation: "Track this agency's monthly cadence to flag future deviations early.",
+        title: `Largest Recipient State: ${totals[0].category}`,
+        description: `${totals[0].category} received $${(totals[0].total / 1e9).toFixed(1)}B in federal obligations across the period — the largest of the ${totals.length} tracked states.`,
+        recommendation: "Track this state's monthly cadence to flag future deviations early.",
       });
     }
 
     insights.push({
       severity: "success",
-      title: "Live Data Synced",
-      description: `Imported ${spendingRows.length} monthly records across ${Object.keys(byCategory).length} federal agencies from USAspending.gov for Connecticut (${startDate} to ${endDate}).`,
-      recommendation: "Re-import periodically to capture the latest obligations.",
+      title: "Multi-State Data Synced",
+      description: `Imported ${spendingRows.length} monthly records across ${Object.keys(byCategory).length} states from USAspending.gov (${startDate} to ${endDate}).`,
+      recommendation: "Re-import periodically to capture the latest federal obligations.",
     });
 
     const { error: insErr } = await supabase.from("ai_insights").insert(insights);
@@ -187,7 +167,7 @@ Deno.serve(async (req) => {
       JSON.stringify({
         success: true,
         records: spendingRows.length,
-        agencies: Object.keys(byCategory).length,
+        states: Object.keys(byCategory).length,
         anomalies: anomalies.length,
         insights: insights.length,
       }),
