@@ -7,6 +7,8 @@ import PercentChangeTable from '@/components/dashboard/PercentChangeTable';
 import AIInsightsPanel from '@/components/dashboard/AIInsightsPanel';
 import ComparisonPanel from '@/components/dashboard/ComparisonPanel';
 import ImportUSASpending from '@/components/dashboard/ImportUSASpending';
+import StateSelector from '@/components/dashboard/StateSelector';
+import { StateFilterProvider } from '@/contexts/StateFilterContext';
 
 const tabs = [
   { id: 'overview', label: 'Overview' },
@@ -21,10 +23,15 @@ const Index = () => {
   const [activeTab, setActiveTab] = useState<TabId>('overview');
 
   return (
+    <StateFilterProvider>
     <div className="min-h-screen grid-pattern">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <DashboardHeader />
-        <ImportUSASpending />
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 mb-4">
+          <ImportUSASpending />
+          <StateSelector />
+        </div>
+
 
         {/* Tab Navigation */}
         <div className="flex items-center gap-1 mb-6 p-1 glass-panel rounded-lg w-fit">

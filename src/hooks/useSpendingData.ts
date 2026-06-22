@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { ALL_STATES, useStateFilter } from '@/contexts/StateFilterContext';
 
 export interface SpendingDataPoint {
   date: string;
@@ -25,17 +26,23 @@ export interface AiInsight {
 }
 
 export const useSpendingData = () => {
+  const { selectedState } = useStateFilter();
   return useQuery({
-    queryKey: ['spending-data'],
+    queryKey: ['spending-data', selectedState],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from('spending_data')
         .select('date, amount, category, is_anomaly, expected');
+      if (selectedState !== ALL_STATES) {
+        query = query.eq('category', selectedState);
+      }
+      const { data, error } = await query;
       if (error) throw error;
       return data as SpendingDataPoint[];
     },
   });
 };
+
 
 export const useAiInsights = () => {
   return useQuery({
