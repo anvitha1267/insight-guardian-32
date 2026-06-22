@@ -33,7 +33,7 @@ const ImportUSASpending = () => {
     <div className="glass-panel rounded-lg p-4 flex items-center gap-4">
       <div className="flex-1">
         <p className="text-sm font-mono text-foreground">
-          {status === 'idle' && 'Import real federal spending data for Connecticut from USAspending.gov'}
+          {status === 'idle' && 'Import real federal spending data across 14 US states from USAspending.gov'}
           {status === 'loading' && message}
           {status === 'success' && message}
           {status === 'error' && message}
