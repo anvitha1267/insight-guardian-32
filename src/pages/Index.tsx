@@ -27,10 +27,9 @@ const Index = () => {
     <div className="min-h-screen grid-pattern">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <DashboardHeader />
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 mb-4">
-          <ImportUSASpending />
-          <StateSelector />
-        </div>
+        <ImportUSASpending />
+        <StateSelector />
+
 
 
         {/* Tab Navigation */}
