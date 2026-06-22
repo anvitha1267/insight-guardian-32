@@ -25,7 +25,7 @@ const StatsBar = () => {
     : `$${(totalSpend / 1e6).toFixed(2)}M`;
 
   const stats = [
-    { label: 'Total CT Spend', value: totalDisplay, icon: DollarSign, color: 'text-primary' },
+    { label: 'Total Federal Spend', value: totalDisplay, icon: DollarSign, color: 'text-primary' },
     { label: 'Anomalies Detected', value: anomalies.length.toString(), icon: AlertTriangle, color: 'text-anomaly' },
     { label: 'Avg H2/H1 Change', value: `${avgChange > 0 ? '+' : ''}${avgChange.toFixed(1)}%`, icon: avgChange > 0 ? TrendingUp : TrendingDown, color: avgChange > 0 ? 'text-warning' : 'text-success' },
     { label: 'Agencies Tracked', value: summaries.length.toString(), icon: DollarSign, color: 'text-muted-foreground' },
