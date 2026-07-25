@@ -101,16 +101,26 @@ Deno.serve(async (req) => {
     for (const rows of Object.values(byCategory)) {
       if (rows.length < 3) continue;
       const amounts = rows.map((r) => r.amount);
+
+      // Method 1: sigma-band (mean ± 1.5σ)
       const mean = amounts.reduce((a, b) => a + b, 0) / amounts.length;
       const variance = amounts.reduce((a, b) => a + (b - mean) ** 2, 0) / amounts.length;
       const stdDev = Math.sqrt(variance);
+
+      // Method 2: Modified Z-Score via MAD (Iglewicz–Hoaglin, threshold 3.5)
+      const sorted = [...amounts].sort((a, b) => a - b);
+      const median = sorted[Math.floor(sorted.length / 2)];
+      const absDev = amounts.map((a) => Math.abs(a - median)).sort((a, b) => a - b);
+      const mad = absDev[Math.floor(absDev.length / 2)];
+
       for (const row of rows) {
         row.expected = Math.round(mean);
-        if (stdDev > 0 && Math.abs(row.amount - mean) > 1.5 * stdDev) {
-          row.is_anomaly = true;
-        }
+        const sigmaHit = stdDev > 0 && Math.abs(row.amount - mean) > 1.5 * stdDev;
+        const madHit = mad > 0 && Math.abs(0.6745 * (row.amount - median) / mad) > 3.5;
+        if (sigmaHit || madHit) row.is_anomaly = true;
       }
     }
+
 
     // Clear and insert
     await supabase.from("spending_data").delete().neq("id", "00000000-0000-0000-0000-000000000000");
