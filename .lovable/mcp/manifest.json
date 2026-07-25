@@ -1,0 +1,97 @@
+{
+  "version": 1,
+  "sdk_version": "0.24.0",
+  "path": "/functions/v1/mcp",
+  "auth": {
+    "type": "none"
+  },
+  "mcp": {
+    "server": {
+      "name": "spendguard-mcp",
+      "version": "0.1.0",
+      "title": "SpendGuard.ai MCP"
+    },
+    "tools": [
+      {
+        "name": "list_states",
+        "title": "List states",
+        "description": "List all US states that have federal spending data imported in SpendGuard.ai.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_state_spending",
+        "title": "Get state spending",
+        "description": "Get monthly federal spending records (date, amount, expected, is_anomaly) for a given US state.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "state": {
+              "type": "string",
+              "minLength": 2,
+              "description": "Full state name as stored (e.g. 'California', 'Texas', 'Connecticut')."
+            }
+          },
+          "required": [
+            "state"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_anomalies",
+        "title": "List spending anomalies",
+        "description": "List detected federal spending anomalies (months where a state's spending deviated >1.5σ from its mean), optionally filtered by state.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "state": {
+              "type": "string",
+              "description": "Optional state name to filter anomalies."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_ai_insights",
+        "title": "List AI insights",
+        "description": "List the AI-generated insights (critical/warning/info/success) about federal spending patterns.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
