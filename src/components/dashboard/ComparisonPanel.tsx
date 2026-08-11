@@ -43,20 +43,20 @@ const ComparisonPanel = () => {
       </div>
       <ResponsiveContainer width="100%" height={280}>
         <BarChart data={chartData} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
-          <CartesianGrid stroke="hsl(222, 25%, 16%)" strokeDasharray="3 3" />
-          <XAxis dataKey="date" stroke="hsl(215, 15%, 50%)" fontSize={11} fontFamily="JetBrains Mono" />
-          <YAxis stroke="hsl(215, 15%, 50%)" fontSize={11} fontFamily="JetBrains Mono" tickFormatter={v => `$${(v/1e6).toFixed(0)}M`} />
+          <CartesianGrid stroke="hsl(220, 18%, 88%)" strokeDasharray="3 3" />
+          <XAxis dataKey="date" stroke="hsl(220, 15%, 45%)" fontSize={11} fontFamily="JetBrains Mono" />
+          <YAxis stroke="hsl(220, 15%, 45%)" fontSize={11} fontFamily="JetBrains Mono" tickFormatter={v => `$${(v/1e6).toFixed(0)}M`} />
           <Tooltip
-            contentStyle={{ backgroundColor: 'hsl(222, 44%, 9%)', border: '1px solid hsl(222, 25%, 16%)', borderRadius: '8px', fontFamily: 'JetBrains Mono', fontSize: 11 }}
+            contentStyle={{ backgroundColor: 'hsl(0, 0%, 100%)', border: '1px solid hsl(220, 18%, 88%)', borderRadius: '8px', fontFamily: 'JetBrains Mono', fontSize: 11 }}
             formatter={(value: number) => [`$${(value / 1e6).toFixed(2)}M`, '']}
           />
-          <Bar dataKey={catA} fill="hsl(175, 80%, 50%)" radius={[3, 3, 0, 0]} />
-          <Bar dataKey={catB} fill="hsl(262, 70%, 60%)" radius={[3, 3, 0, 0]} />
+          <Bar dataKey={catA} fill="hsl(220, 70%, 30%)" radius={[3, 3, 0, 0]} />
+          <Bar dataKey={catB} fill="hsl(200, 80%, 40%)" radius={[3, 3, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
       <div className="flex items-center gap-6 mt-3 text-xs font-mono">
         <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-sm bg-primary" />{catA}</span>
-        <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-sm" style={{ backgroundColor: 'hsl(262, 70%, 60%)' }} />{catB}</span>
+        <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-sm" style={{ backgroundColor: 'hsl(200, 80%, 40%)' }} />{catB}</span>
       </div>
     </div>
   );
