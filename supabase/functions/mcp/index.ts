@@ -11,7 +11,7 @@ import { defineTool } from "npm:@lovable.dev/mcp-js@0.24.0";
 var list_states_default = defineTool({
   name: "list_states",
   title: "List states",
-  description: "List all US states that have federal spending data imported in SpendGuard.ai.",
+  description: "List all US states that have federal spending data imported in SpendGuard.",
   inputSchema: {},
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
   handler: async () => {
@@ -97,9 +97,9 @@ var list_insights_default = defineTool4({
 // src/lib/mcp/index.ts
 var mcp_default = defineMcp({
   name: "spendguard-mcp",
-  title: "SpendGuard.ai MCP",
+  title: "SpendGuard MCP",
   version: "0.1.0",
-  instructions: "Tools for SpendGuard.ai \u2014 read US state federal spending data (from USAspending.gov), detected anomalies, and AI-generated insights. Use `list_states` to discover available states, `get_state_spending` for monthly time series, `list_anomalies` for flagged deviations, and `list_ai_insights` for narrative analysis.",
+  instructions: "Tools for SpendGuard \u2014 read US state federal spending data (from USAspending.gov), detected anomalies, and analytical insights. Use `list_states` to discover available states, `get_state_spending` for monthly time series, `list_anomalies` for flagged deviations, and `list_ai_insights` for narrative analysis.",
   tools: [list_states_default, get_state_spending_default, list_anomalies_default, list_insights_default]
 });
 

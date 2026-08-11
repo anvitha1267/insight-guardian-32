@@ -20,7 +20,7 @@ const AIInsightsPanel = () => {
     <div className="glass-panel rounded-lg p-6">
       <div className="flex items-center gap-2 mb-4">
         <Sparkles className="h-4 w-4 text-primary" />
-        <h2 className="font-heading text-sm uppercase tracking-wider text-muted-foreground">AI-Powered Insights</h2>
+        <h2 className="font-heading text-sm uppercase tracking-wider text-muted-foreground">Analytical Insights</h2>
       </div>
       <div className="space-y-4">
         {insights.map((insight, i) => {
