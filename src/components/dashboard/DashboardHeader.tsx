@@ -8,7 +8,7 @@ const DashboardHeader = () => (
       </div>
       <div>
         <h1 className="font-heading text-xl font-bold tracking-tight text-foreground">
-          SpendGuard<span className="text-primary">.</span>ai
+          SpendGuard
         </h1>
         <p className="text-xs text-muted-foreground font-mono">Multi-State Federal Spending · USAspending.gov</p>
       </div>

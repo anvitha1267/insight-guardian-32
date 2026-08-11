@@ -14,7 +14,7 @@ const tabs = [
   { id: 'overview', label: 'Overview' },
   { id: 'timeseries', label: 'Time Series' },
   { id: 'comparison', label: 'Comparison' },
-  { id: 'insights', label: 'AI Insights' },
+  { id: 'insights', label: 'Analytical Insights' },
 ] as const;
 
 type TabId = typeof tabs[number]['id'];
@@ -77,7 +77,7 @@ const Index = () => {
           </div>
         )}
 
-        {/* AI Insights Tab */}
+        {/* Analytical Insights Tab */}
         {activeTab === 'insights' && (
           <div className="space-y-6 pb-12">
             <AIInsightsPanel />

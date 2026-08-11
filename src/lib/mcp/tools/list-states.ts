@@ -5,7 +5,7 @@ import { z } from "zod";
 export default defineTool({
   name: "list_states",
   title: "List states",
-  description: "List all US states that have federal spending data imported in SpendGuard.ai.",
+  description: "List all US states that have federal spending data imported in SpendGuard.",
   inputSchema: {},
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
   handler: async () => {

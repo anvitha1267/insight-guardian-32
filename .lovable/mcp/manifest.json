@@ -9,13 +9,13 @@
     "server": {
       "name": "spendguard-mcp",
       "version": "0.1.0",
-      "title": "SpendGuard.ai MCP"
+      "title": "SpendGuard MCP"
     },
     "tools": [
       {
         "name": "list_states",
         "title": "List states",
-        "description": "List all US states that have federal spending data imported in SpendGuard.ai.",
+        "description": "List all US states that have federal spending data imported in SpendGuard.",
         "annotations": {
           "readOnlyHint": true,
           "idempotentHint": true,
